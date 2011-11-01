@@ -12,7 +12,11 @@
         }
         public double X { get; set; }
         public double Y { get; set; }
-        public MyPoint Clone() { return new MyPoint(this.X, this.Y); }
+
+        public bool Equals(MyPoint p)
+        {
+            return p.X == this.X && p.Y == this.Y;
+        }
     }
 
     public class Line
@@ -28,17 +32,17 @@
             c = 0;
             isVert = false;
         }
-        
-        public List<MyPoint> Points { get; private set; }
+
+        public List<MyPoint> Points { get; set; }
 
         public Line Clone()
         {
             Line ret = new Line();
             int len = this.Points.Count;
             for (int i = 0; i < len; i++)
-			{
-			  ret.Points.Add(this.Points[i].Clone());
-			}
+            {
+                ret.Points.Add(this.Points[i]);
+            }
             ret.m = this.m;
             ret.c = this.c;
             ret.isVert = this.isVert;
@@ -51,10 +55,11 @@
             {
                 return false;
             }
-            
-            foreach (MyPoint p in this.Points)
+
+            int nPoint = this.Points.Count;
+            for (int i = 0; i < nPoint; i++)
             {
-                if (other.Points.FindAll(x => x.X == p.X && x.Y == p.Y).Count == 0)
+                if (!other.HasPoint(this.Points[i]))
                 {
                     return false;
                 }
@@ -67,17 +72,20 @@
             if (Points.Count < 2)
             {
                 Points.Add(p);
-                
+
                 if (Points.Count == 2)
                 {
                     double rise = Points[1].Y - Points[0].Y;
                     double run = Points[1].X - Points[0].X;
 
-                    isVert = (run == 0.0);
-                    if (!isVert)
+                    if (run != 0.0)
                     {
                         m = rise / run;
                         c = Points[0].Y - m * Points[0].X;
+                    }
+                    else
+                    {
+                        isVert = true;
                     }
                 }
                 return true;
@@ -90,7 +98,7 @@
 
         private bool AddCollinearPoint(MyPoint p)
         {
-            if (this.HasPoint(p))
+            if (this.PassesThroughPoint(p))
             {
                 Points.Add(p);
                 return true;
@@ -98,7 +106,20 @@
             return false;
         }
 
-        private bool HasPoint(MyPoint p)
+        public bool HasPoint(MyPoint p)
+        {
+            int nPoint = this.Points.Count;
+            for (int i = 0; i < nPoint; i++)
+            {
+                if (this.Points[i].Equals(p))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool PassesThroughPoint(MyPoint p)
         {
             if (isVert)
             {
@@ -113,73 +134,183 @@
 
     public class TestSet
     {
+        MyPoint[] points;
+        int count;
         public TestSet()
         {
-            this.Points = new List<MyPoint>();
+            this.points = new MyPoint[17];
+            count = 0;
         }
-        public List<MyPoint> Points { get; set; }
+
+        public int Count { get { return count; } }
+        public MyPoint[] Points { get { return points; } }
+
+        public void AddPoint(MyPoint p)
+        {
+            points[count] = p;
+            count++;
+        }
+
+        public void RemoveAt(int pos)
+        {
+            for (int i = pos; i < count; i++)
+            {
+                this.points[i] = this.points[i + 1];  
+            }
+            count--;
+        }
 
         public TestSet Clone()
         {
             TestSet ret = new TestSet();
-            int len = this.Points.Count;
+            int len = this.Count;
             for (int i = 0; i < len; i++)
             {
-                ret.Points.Add(this.Points[i].Clone());
+                ret.AddPoint(this.Points[i]);
             }
             return ret;
         }
     }
 
-    public class ResultSet
+    public class Results
     {
-        public ResultSet()
+        public Results()
         {
             this.Lines = new List<Line>();
         }
         public List<Line> Lines { get; set; }
 
-        public ResultSet Clone()
+        public Results Clone()
         {
-            ResultSet ret = new ResultSet();
+            Results ret = new Results();
             int len = this.Lines.Count;
             for (int i = 0; i < len; i++)
-			{
-			  ret.Lines.Add(this.Lines[i].Clone());
-			}
+            {
+                ret.Lines.Add(this.Lines[i].Clone());
+            }
 
             return ret;
         }
 
-        public bool Equals(ResultSet other)
+        public bool Equals(Results other)
         {
             if (this.Lines.Count != other.Lines.Count)
             {
                 return false;
             }
 
-            foreach(Line l in this.Lines)
+            int len = this.Lines.Count;
+            int oLen = other.Lines.Count;
+            for (int i = 0; i < len; i++)
             {
-                if (other.Lines.FindAll(X => X.Equals(l)).Count == 0)
+                bool found = false;
+                for (int j = 0; j < oLen; j++)
+                {
+                    if (this.Lines[i].Equals(other.Lines[j]))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
                 {
                     return false;
                 }
+                //if (other.Lines.FindAll(X => X.Equals(this.Lines[i])).Count == 0)
+                //{
+                //    return false;
+                //}
             }
+
             return true;
         }
+
+        public int Permutations { get { return Permute(Lines.Count); } }
+
+        public static int Permute(int val)
+        {
+            int fac = 1;
+            for (int i = 1; i <= val; i++)
+            {
+                fac *= i;
+            }
+            return fac;
+        }
+    }
+
+    public class ResultCollection
+    {
+        public ResultCollection()
+        {
+            this.ResultSet = new List<Results>();
+        }
+
+        public List<Results> ResultSet { get; private set; }
+        public int MinSetSize
+        {
+            get
+            {
+                int min = Int32.MaxValue;
+
+                int nRes = this.ResultSet.Count;
+                for (int i = 0; i < nRes; i++)
+                {
+                    if (this.ResultSet[i].Lines.Count < min)
+                    {
+                        min = this.ResultSet[i].Lines.Count;
+                    }
+                }
+                return min;
+            }
+        }
+        public bool AddUniqueResult(Results res)
+        {
+            if (ResultSet.Find(x => x.Equals(res)) != null)
+            {
+                return false;
+            }
+            else
+            {
+                ResultSet.Add(res);
+                return true;
+            }
+        }
+
+        public ResultCollection GetBestSet()
+        {
+            ResultCollection ret = new ResultCollection();
+
+            int nRes = this.ResultSet.Count;
+            for (int i = 0; i < nRes; i++)
+            {
+                if (this.ResultSet[i].Lines.Count == this.MinSetSize)
+                {
+                    ret.ResultSet.Add(this.ResultSet[i]);
+                }
+            }
+
+            return ret;
+        }
+    }
+
+    public class CallPointResult
+    {
+        public CallPointResult()
+        {
+            DoMore = false;
+            Reset = false;
+        }
+        public TestSet WorkingSet { get; set; }
+        public Results WorkingResults { get; set; }
+        public bool DoMore {get; set; }
+        public bool Reset { get; set; }
     }
 
     public class Solution
     {
-        static int loopCheck = 0;
         static void Main(string[] args)
         {
             List<TestSet> testSets = ReadInput();
-
-            foreach (TestSet set in testSets)
-            {
-                CalcPoints(set);
-            }
         }
 
         private static List<TestSet> ReadInput()
@@ -200,84 +331,119 @@
                     string point = (i + 1 == nTest && j + 1 == nPoint) ? Console.In.ReadToEnd() : Console.ReadLine();
                     string x = point.Split(' ')[0];
                     string y = point.Split(' ')[1];
-                    set.Points.Add(new MyPoint(Convert.ToDouble(x), Convert.ToDouble(y)));
+                    
+                    set.AddPoint(new MyPoint(Convert.ToDouble(x), Convert.ToDouble(y)));
                 }
-                tests.Add(set);
+                WriteOutput(CalcPoints(set).GetBestSet());
             }
             return tests;
         }
 
-        public static List<ResultSet> CalcPoints(TestSet set)
+        private static void WriteOutput(ResultCollection res)
         {
-            List<ResultSet> ret = new List<ResultSet>();
-            ResultSet res = new ResultSet();
+            int mod = 1000000007;
+            int minLines = res.MinSetSize;
+            int permutations = Results.Permute(minLines) * res.ResultSet.Count;
+            Console.WriteLine("{0} {1}", minLines % mod, permutations % mod);
+        }
 
-            ret = CalcPointsRecurse2(set, res, ret);
-
+        public static ResultCollection CalcPoints(TestSet set)
+        {
+            ResultCollection ret = new ResultCollection();
+            Results res = new Results();
+            TestSet work = set.Clone();
+            CallPointResult calcRes = new CallPointResult();
+            //do
+            //{
+            //    if (calcRes.Reset)
+            //    {
+            //        work = set.Clone();
+            //        res = new Results();
+            //    }
+            //    calcRes = CalcPointsRecurse2(work, res, ret);
+            //    work = calcRes.WorkingSet;
+            //    res = calcRes.WorkingResults;
+            //}
+            //while (calcRes.DoMore);
+            CalcPointsRecurse2(work, res, ret);
             return ret;
         }
 
-        public static List<ResultSet> CalcPointsRecurse2(TestSet set, ResultSet res, List<ResultSet> ret)
+        public static CallPointResult CalcPointsRecurse2(TestSet set, Results res, ResultCollection ret)
         {
-            int nSetPoint = set.Points.Count;
+            int nSetPoint = set.Count;
             if (nSetPoint <= 2)
             {
                 Line l = new Line();
-                foreach (MyPoint p in set.Points)
+                for (int i = 0; i < nSetPoint; ++i)
                 {
-                    l.AddValidPoint(p);
+                    l.AddValidPoint(set.Points[i]);
                 }
                 if (l.Points.Count > 0)
                 {
                     res.Lines.Add(l);
                 }
-                ret.Add(res);
-                return ret;
+                ret.AddUniqueResult(res);
+                return new CallPointResult() { Reset = true };
             }
-
-            for (int i = 0; i < nSetPoint-1; i++)
+            List<Line> linesFound = new List<Line>();
+            for (int i = 0; i < nSetPoint - 1; i++)
             {
-                for (int j = i+1; j < nSetPoint; j++)
+                for (int j = i + 1; j < nSetPoint; j++)
                 {
                     if (i != j)
                     {
-                        ResultSet workRes = res.Clone();
+                        Results workRes = res.Clone();
                         TestSet workSet = set.Clone();
                         Line currentLine = new Line();
 
                         currentLine.AddValidPoint(set.Points[i]);
                         currentLine.AddValidPoint(set.Points[j]);
 
-                        workSet.Points.RemoveAt(j);
-                        workSet.Points.RemoveAt(i);
+                        workSet.RemoveAt(j);
+                        workSet.RemoveAt(i);
 
-                        int nPoints = workSet.Points.Count;
+                        int nPoints = workSet.Count;
 
                         for (int k = nPoints - 1; k >= 0; k--)
                         {
                             if (currentLine.AddValidPoint(workSet.Points[k]))
                             {
-                                workSet.Points.RemoveAt(k);
-                            }
-
-                            if (++loopCheck > 10000)
-                            {
-                                throw new Exception("Dat be too much loopin boy!");
+                                workSet.RemoveAt(k);
                             }
                         }
                         workRes.Lines.Add(currentLine);
-                        if (workSet.Points.Count > 0)
+                        int n = linesFound.Count;
+                        bool repeatedLine = false;
+                        for (int m = 0; m < n; m++)
                         {
-                            ret = CalcPointsRecurse2(workSet, workRes, ret);
+                            if (linesFound[m].Equals(currentLine))
+                            {
+                                repeatedLine = true;
+                                break;
+                            }
                         }
-                        else
+                        if (!repeatedLine)
                         {
-                            ret.Add(workRes);
+                            linesFound.Add(currentLine);
+                            if (workRes.Lines.Count <= ret.MinSetSize)
+                            {
+                               
+                                if (workSet.Count > 0)
+                                {
+                                    CalcPointsRecurse2(workSet, workRes, ret);
+                                   // return new CallPointResult() { DoMore = true, WorkingResults = workRes, WorkingSet = workSet, Reset = false };
+                                }
+                                else
+                                {
+                                    ret.AddUniqueResult(workRes);
+                                }
+                            }
                         }
                     }
                 }
             }
-            return ret;
+            return new CallPointResult() { Reset = true };
         }
     }
- }
+}
