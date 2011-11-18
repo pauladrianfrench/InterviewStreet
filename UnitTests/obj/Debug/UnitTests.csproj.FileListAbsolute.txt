@@ -7,3 +7,5 @@ C:\Projects\InterviewStreet\UnitTests\bin\Debug\PointsInAPlane.pdb
 C:\Projects\InterviewStreet\UnitTests\bin\Debug\nunit.framework.xml
 C:\Projects\InterviewStreet\UnitTests\obj\Debug\UnitTests.dll
 C:\Projects\InterviewStreet\UnitTests\obj\Debug\UnitTests.pdb
+C:\Projects\InterviewStreet\UnitTests\bin\Debug\PointsInAPlaneV2.exe
+C:\Projects\InterviewStreet\UnitTests\bin\Debug\PointsInAPlaneV2.pdb

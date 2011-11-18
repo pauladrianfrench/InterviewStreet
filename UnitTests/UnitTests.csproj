@@ -41,10 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BenchMarkTests.cs" />
     <Compile Include="UnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PointsInAPlaneV2\PointsInAPlaneV2.csproj">
+      <Project>{AC3728B4-AF30-4F67-AE94-DFD2D823FA64}</Project>
+      <Name>PointsInAPlaneV2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PointsInAPlane\PointsInAPlane.csproj">
       <Project>{1C7B918A-BB2A-4A76-B4CF-83FA9BAE8A6D}</Project>
       <Name>PointsInAPlane</Name>
