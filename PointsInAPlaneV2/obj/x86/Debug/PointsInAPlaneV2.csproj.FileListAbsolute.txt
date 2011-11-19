@@ -1,0 +1,5 @@
+C:\Projects\InterviewStreet\PointsInAPlaneV2\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Projects\InterviewStreet\PointsInAPlaneV2\bin\Debug\PointsInAPlaneV2.exe
+C:\Projects\InterviewStreet\PointsInAPlaneV2\bin\Debug\PointsInAPlaneV2.pdb
+C:\Projects\InterviewStreet\PointsInAPlaneV2\obj\x86\Debug\PointsInAPlaneV2.exe
+C:\Projects\InterviewStreet\PointsInAPlaneV2\obj\x86\Debug\PointsInAPlaneV2.pdb

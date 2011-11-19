@@ -7,7 +7,7 @@
     using System.Diagnostics;
 
     [TestFixture]
-    public class UnitTests
+    public class BenchMarkTests
     {
         [Test]
         public void TestArray()
@@ -146,7 +146,7 @@
             set1.Add(new MyPoint(8, 5));
 
             ResultCollection res = Solution.CalcPoints(set1);
-            //OutputResults(res);
+            OutputResults(res);
         }
 
         [Test]
@@ -218,15 +218,39 @@
             ////set1.Add(new MyPoint(0, 1));
             ////set1.Add(new MyPoint(1, 0));
 
-            //set1.AddPoint(new MyPoint(6, 5));
-            //set1.AddPoint(new MyPoint(6, 6));
-            //set1.AddPoint(new MyPoint(7, 5));
-            //set1.AddPoint(new MyPoint(8, 5));
-            //set1.AddPoint(new MyPoint(8, 4));
-            //set1.AddPoint(new MyPoint(9, 6));
+            set1.Add(new MyPoint(6, 5));
+            set1.Add(new MyPoint(6, 6));
+            set1.Add(new MyPoint(7, 5));
+            set1.Add(new MyPoint(8, 5));
+            set1.Add(new MyPoint(8, 4));
+            set1.Add(new MyPoint(9, 6));
 
             ResultCollection2 res = Solution.CalcPoints2(set1);
-           // OutputResults2(set1, res);
+            int val = res.ResultSet.Count;
+            OutputResults2(set1, res);
+        }
+
+        [Test]
+        public void LneParams()
+        {
+            LineParams l1 = new LineParams(new MyPoint(1, 1), new MyPoint(2, 2));
+            LineParams l2 = new LineParams(new MyPoint(3, 3), new MyPoint(4, 4));
+            LineParams l3 = new LineParams(new MyPoint(5, 3), new MyPoint(7, 2));
+            LineParams l4 = new LineParams(new MyPoint(1, 3), new MyPoint(2, 4));
+
+            Assert.IsTrue(l1.IsSameLine(l2));
+            Assert.IsTrue(l1.IsCollinear(new MyPoint(3, 3)));
+
+            Assert.IsFalse(l1.IsSameLine(l3));
+            Assert.IsFalse(l1.IsSameLine(l4));
+            Assert.IsFalse(l1.IsCollinear(new MyPoint(7, 2)));
+            Assert.IsFalse(l1.IsCollinear(new MyPoint(2, 4)));
+
+            List<LineParams> par = new List<LineParams>();
+            par.Add(l1);
+
+            Assert.IsTrue(par.Exists(x => x.IsSameLine(l2)));
+            Assert.IsFalse(par.Exists(x => x.IsSameLine(l3)));
         }
 
         [Test]
@@ -255,33 +279,32 @@
             set1.Add(new MyPoint(6, 1));
             set1.Add(new MyPoint(7, 2));
             set1.Add(new MyPoint(8, 5));
-            ResultCollection2 res = Solution.CalcPoints2(set1).GetBestSet();
+            ResultCollection2 res = Solution.CalcPoints2(set1);
             OutputResults2(set1, res);
         }
 
         [Test]
-        public void SpeedTest1()
+        public void SpeedTestCloneTestSet()
         {
+            MyList<MyPoint> set1 = new MyList<MyPoint>();
+            set1.Add(new MyPoint(1, 6));
+            set1.Add(new MyPoint(2, 5));
+            set1.Add(new MyPoint(2, 6));
+            set1.Add(new MyPoint(3, 4));
+            set1.Add(new MyPoint(3, 5));
+            set1.Add(new MyPoint(3, 6));
+            set1.Add(new MyPoint(3, 7));
+            set1.Add(new MyPoint(5, 5));
+            set1.Add(new MyPoint(5, 6));
+            set1.Add(new MyPoint(6, 4));
+
             for (int i = 0; i < 1000000; ++i)
             {
-                MyList<MyPoint> set1 = new MyList<MyPoint>();
-                set1.Add(new MyPoint(1, 6));
-                set1.Add(new MyPoint(2, 5));
-                set1.Add(new MyPoint(2, 6));
-                set1.Add(new MyPoint(3, 4));
-                set1.Add(new MyPoint(3, 5));
-                set1.Add(new MyPoint(3, 6));
-                set1.Add(new MyPoint(3, 7));
-                set1.Add(new MyPoint(5, 5));
-                set1.Add(new MyPoint(5, 6));
-                set1.Add(new MyPoint(6, 4));
-
+                MyList<MyPoint> workSet = set1.Clone();
                 Line currentLine = new Line();
 
                 currentLine.AddValidPoint(set1[0]);
                 currentLine.AddValidPoint(set1[1]);
-
-                MyList<MyPoint> workSet = set1.Clone();
 
                 workSet.RemoveAt(0);
                 workSet.RemoveAt(1);
@@ -299,26 +322,26 @@
         }
 
         [Test]
-        public void SpeedTest2()
+        public void SpeedTestCloneItemSet()
         {
             ItemSet seta = new ItemSet();
             seta.SetUp(10);
+            MyList<MyPoint> set1 = new MyList<MyPoint>();
+            set1.Add(new MyPoint(1, 6));
+            set1.Add(new MyPoint(2, 6));
+            set1.Add(new MyPoint(5, 6));
+            set1.Add(new MyPoint(3, 6));
+            set1.Add(new MyPoint(2, 5));
+            set1.Add(new MyPoint(3, 5));
+            set1.Add(new MyPoint(5, 5));
+            set1.Add(new MyPoint(3, 4));
+            set1.Add(new MyPoint(3, 7));
+            set1.Add(new MyPoint(6, 4));
 
-            for (int i = 0; i < 100000; ++i)
+            for (int i = 0; i < 1000000; ++i)
             {
-                MyList<MyPoint> set1 = new MyList<MyPoint>();
-                set1.Add(new MyPoint(1, 6));
-                set1.Add(new MyPoint(2, 6));
-                set1.Add(new MyPoint(5, 6));
-                set1.Add(new MyPoint(3, 6));
-                set1.Add(new MyPoint(2, 5));
-                set1.Add(new MyPoint(3, 5));
-                set1.Add(new MyPoint(5, 5));
-                set1.Add(new MyPoint(3, 4));
-                set1.Add(new MyPoint(3, 7));
-                set1.Add(new MyPoint(6, 4));
-
                 ItemSet workSet = seta.Clone();
+          
                 ItemSet currentLine = new ItemSet();
 
                 currentLine.Add(0);
@@ -382,7 +405,7 @@
                     {
                         Console.Write("({0}, {1}) ", l.GetItem(set1, i).X, l.GetItem(set1, i).Y);
                     }
-                    
+
                     Console.WriteLine();
                 }
                 Console.WriteLine();
@@ -391,3 +414,4 @@
         }
     }
 }
+
