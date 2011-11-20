@@ -104,13 +104,13 @@
             iSet2.Add(5);
 
             Results2 r2 = new Results2();
-            r2.AddResult(iSet1);
+            r2.AddResult(iSet1.GetIndices());
 
             Results2 r3 = r2.Clone();
-            r3.AddResult(iSet2);
+            r3.AddResult(iSet2.GetIndices());
 
-            Assert.AreEqual(2, r3.Lines.Count);
-            Assert.AreEqual(1, r2.Lines.Count);
+            Assert.AreEqual(2, r3.Count);
+            Assert.AreEqual(1, r2.Count);
 
             ItemSet iSet3 = iSet1.Clone();
             iSet3.Add(1);
@@ -122,83 +122,46 @@
         }
 
         [Test]
-        public void Test1()
+        public void TestResult()
         {
-            MyList<MyPoint> set1 = new MyList<MyPoint>();
-            set1.Add(new MyPoint(0, 0));
-            set1.Add(new MyPoint(0, 1));
-            set1.Add(new MyPoint(1, 0));
+            uint first = 7;
+            uint second = 56;
+            uint third =448;
+            uint fourth = 3584;
+            uint fifth = 28672;
 
-            ResultCollection res = Solution.CalcPoints(set1).GetBestSet();
-            OutputResults(res);
+            Results2 res = new Results2();
+            res.AddResult(second);
+            res.AddResult(first);
+            res.AddResult(fourth);
+            res.AddResult(fifth);
+            res.AddResult(third);
+
+            Assert.AreEqual(first, res.GetLine(0).GetIndices());
+            Assert.AreEqual(second, res.GetLine(1).GetIndices());
+            Assert.AreEqual(third, res.GetLine(2).GetIndices());
+            Assert.AreEqual(fourth, res.GetLine(3).GetIndices());
+            Assert.AreEqual(fifth, res.GetLine(4).GetIndices());
+
+            Results2 res2 = new Results2();
+            res2.AddResult(second);
+            res2.AddResult(fifth);
+            res2.AddResult(third);
+            res2.AddResult(first);
+            res2.AddResult(fourth);
+
+            Assert.AreEqual(first, res2.GetLine(0).GetIndices());
+            Assert.AreEqual(second, res2.GetLine(1).GetIndices());
+            Assert.AreEqual(third, res2.GetLine(2).GetIndices());
+            Assert.AreEqual(fourth, res2.GetLine(3).GetIndices());
+            Assert.AreEqual(fifth, res2.GetLine(4).GetIndices());
+
+            Assert.IsTrue(res2.Equals(res));
+
+            Results2 res3 = res.Clone();
+            Assert.IsTrue(res2.Equals(res3));
         }
-
-        [Test]
-        public void Test2()
-        {
-            MyList<MyPoint> set1 = new MyList<MyPoint>();
-            set1.Add(new MyPoint(0, 0));
-            set1.Add(new MyPoint(1, 1));
-            set1.Add(new MyPoint(2, 2));
-            set1.Add(new MyPoint(5, 0));
-            set1.Add(new MyPoint(6, 1));
-            set1.Add(new MyPoint(7, 2));
-            set1.Add(new MyPoint(8, 5));
-
-            ResultCollection res = Solution.CalcPoints(set1);
-            OutputResults(res);
-        }
-
-        [Test]
-        public void Testx()
-        {
-            MyList<MyPoint> set1 = new MyList<MyPoint>();
-            set1.Add(new MyPoint(1, 6));
-            set1.Add(new MyPoint(2, 5));
-            set1.Add(new MyPoint(2, 6));
-            set1.Add(new MyPoint(3, 4));
-            set1.Add(new MyPoint(3, 5));
-            set1.Add(new MyPoint(3, 6));
-            set1.Add(new MyPoint(3, 7));
-            set1.Add(new MyPoint(5, 5));
-            set1.Add(new MyPoint(5, 6));
-            set1.Add(new MyPoint(6, 4));
-            //set1.AddPoint(new MyPoint(6, 5));
-            //set1.AddPoint(new MyPoint(6, 6));
-            //set1.AddPoint(new MyPoint(7, 5));
-            //set1.AddPoint(new MyPoint(8, 5));
-            //set1.AddPoint(new MyPoint(8, 4));
-            //set1.AddPoint(new MyPoint(9, 6));
-
-            ResultCollection res = Solution.CalcPoints(set1).GetBestSet();
-            OutputResults(res);
-        }
-
-        [Test]
-        public void Testz()
-        {
-            MyList<MyPoint> set1 = new MyList<MyPoint>();
-            set1.Add(new MyPoint(1, 6));
-            set1.Add(new MyPoint(2, 6));
-            set1.Add(new MyPoint(5, 6));
-            set1.Add(new MyPoint(3, 6));
-            set1.Add(new MyPoint(2, 5));
-            set1.Add(new MyPoint(3, 5));
-            set1.Add(new MyPoint(5, 5));
-            set1.Add(new MyPoint(3, 4));
-            set1.Add(new MyPoint(3, 7));
-            set1.Add(new MyPoint(6, 4));
-            //set1.AddPoint(new MyPoint(6, 5));
-            //set1.AddPoint(new MyPoint(6, 6));
-            //set1.AddPoint(new MyPoint(7, 5));
-            //set1.AddPoint(new MyPoint(8, 5));
-            //set1.AddPoint(new MyPoint(8, 4));
-            //set1.AddPoint(new MyPoint(9, 6));
-
-            ResultCollection res = Solution.CalcPoints(set1);
-            //OutputResults(res);
-        }
-
+       
         [Test]
         public void TestFast()
         {
@@ -214,9 +177,9 @@
             set1.Add(new MyPoint(3, 7));
             set1.Add(new MyPoint(6, 4));
 
-            ////set1.Add(new MyPoint(0, 0));
-            ////set1.Add(new MyPoint(0, 1));
-            ////set1.Add(new MyPoint(1, 0));
+            //set1.Add(new MyPoint(0, 0));
+            //set1.Add(new MyPoint(0, 1));
+            //set1.Add(new MyPoint(1, 0));
 
             set1.Add(new MyPoint(6, 5));
             set1.Add(new MyPoint(6, 6));
@@ -225,7 +188,7 @@
             set1.Add(new MyPoint(8, 4));
             set1.Add(new MyPoint(9, 6));
 
-            ResultCollection2 res = Solution.CalcPoints2(set1);
+            ResultCollection2 res = Solution.CalculatePoints(set1);
             int val = res.ResultSet.Count;
             OutputResults2(set1, res);
         }
@@ -264,7 +227,7 @@
             set1.Add(new MyPoint(6, 1));
             set1.Add(new MyPoint(7, 2));
             set1.Add(new MyPoint(8, 5));
-            ResultCollection2 res = Solution.CalcPoints2(set1);
+            ResultCollection2 res = Solution.CalculatePoints(set1);
             OutputResults2(set1, res);
         }
 
@@ -279,7 +242,7 @@
             set1.Add(new MyPoint(6, 1));
             set1.Add(new MyPoint(7, 2));
             set1.Add(new MyPoint(8, 5));
-            ResultCollection2 res = Solution.CalcPoints2(set1);
+            ResultCollection2 res = Solution.CalculatePoints(set1);
             OutputResults2(set1, res);
         }
 
@@ -391,11 +354,11 @@
                 Results2 r = res.ResultSet[k];
                 Console.WriteLine("Result set {0}", ++count);
                 Console.WriteLine("Permutuations: {0}", r.Permutations);
-                int c = r.Lines.Count;
+                int c = r.Count;
                 for (int j = 0; j < c; j++)
                 {
-                    ItemSet l = r.Lines[j];
-                    if (r.Lines.Count == 1)
+                    ItemSet l = r.GetLine(j);
+                    if (r.Count == 1)
                     {
                         Console.WriteLine("Emergency");
                     }

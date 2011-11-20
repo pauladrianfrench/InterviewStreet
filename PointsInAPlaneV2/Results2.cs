@@ -6,33 +6,71 @@
     using System.Text;
 
     public class Results2
-    {   
+    {
+        uint[] lins;
+        int count;
         public Results2()
         {
-            this.Lines = new MyList<ItemSet>();
+            lins = new uint[10];
+            count = 0;
         }
-        public MyList<ItemSet> Lines { get; set; }
+
+        public int Count { get { return count; } }
 
         public Results2 Clone()
         {
             Results2 ret = new Results2();
-            int len = this.Lines.Count;
+            int len = this.count;
             for (int i = 0; i < len; i++)
             {
-                ret.Lines.Add(this.Lines[i].Clone());
+                ret.lins[i] = this.lins[i];
             }
+            ret.count = this.count;
             return ret;
         }
 
-        public void AddResult(ItemSet set)
+        public void AddResult(uint set)
         {
-            Lines.Add(set);
+            uint stashThis = 0;
+            uint stashTemp = 0;
+            bool shift = false;
+           
+            for (int i = 0; i < count; i++)
+            {
+                if (shift)
+                {
+                    stashTemp = stashThis;
+                    stashThis = lins[i];
+                    lins[i] = stashTemp;
+                }
+                else if (set <= lins[i])
+                {
+                    shift = true;
+                    stashThis = lins[i];
+                    lins[i] = set;
+                }
+            }
+            if (shift)
+            {
+                lins[count++] = stashThis;
+            }
+            else
+            {
+                lins[count++] = set;
+            }
+        }
+
+        public ItemSet GetLine(int index)
+        {
+            ItemSet ret = new ItemSet();
+            ret.SetIndices(lins[index]);
+            return ret;
         }
 
         public bool Equals(Results2 other)
         {
-            int len = this.Lines.Count;
-            int oLen = other.Lines.Count;
+            int len = this.count;
+            int oLen = other.count;
             if (len != oLen)
             {
                 return false;
@@ -40,16 +78,7 @@
 
             for (int i = 0; i < len; i++)
             {
-                bool found = false;
-                for (int j = 0; j < len; j++)
-                {
-                    if (this.Lines[i].Equals(other.Lines[j]))
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
+                if (lins[i] != other.lins[i])
                 {
                     return false;
                 }
@@ -57,7 +86,7 @@
             return true;
         }
 
-        public int Permutations { get { return Permute(Lines.Count); } }
+        public int Permutations { get { return Permute(count); } }
 
         public static int Permute(int val)
         {

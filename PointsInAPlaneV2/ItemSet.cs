@@ -13,7 +13,7 @@
             this.Count = 0;
         }
 
-        public long PowerOfTwo(int index)
+        public static long PowerOfTwo(int index)
         {
             switch (index)
             {
@@ -53,7 +53,7 @@
             return -1;
         }
 
-        public int LogBase2(uint mask)
+        public static int LogBase2(uint mask)
         {
             switch (mask)
             {
@@ -92,6 +92,11 @@
             }
             return -1;
         }
+        
+        public bool HasItems(uint its)
+        {
+            return (indices & its) == its;
+        }
 
         public void Reset()
         {
@@ -125,6 +130,12 @@
         public uint GetIndices()
         {
             return indices;
+        }
+
+        public void SetIndices(uint ind)
+        {
+            indices = ind;
+            Count = CountBits();
         }
 
         public ItemSet Clone()

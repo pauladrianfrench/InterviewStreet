@@ -17,7 +17,7 @@
         
         public bool AddUniqueResult(Results2 res)
         {
-            int rCount = res.Lines.Count;
+            int rCount = res.Count;
             if (rCount <= 0)
             {
                 return false;
@@ -25,7 +25,7 @@
             int nRes = ResultSet.Count;
             for (int i = nRes -1; i >= 0; --i)
             {
-                int rsCount = ResultSet[i].Lines.Count;
+                int rsCount = ResultSet[i].Count;
                 
                 if (rsCount < rCount || res.Equals(ResultSet[i]))
                 {
@@ -35,7 +35,6 @@
                 {
                     ResultSet.RemoveAt(i);
                 }
-                
             }
             ResultSet.Add(res);
             BestSetSize = rCount;
@@ -49,7 +48,7 @@
             int nRes = this.ResultSet.Count;
             for (int i = 0; i < nRes; i++)
             {
-                if (this.ResultSet[i].Lines.Count == ResultCollection2.BestSetSize)
+                if (this.ResultSet[i].Count == ResultCollection2.BestSetSize)
                 {
                     ret.ResultSet.Add(this.ResultSet[i]);
                 }

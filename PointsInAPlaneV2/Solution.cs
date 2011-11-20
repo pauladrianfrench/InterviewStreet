@@ -18,7 +18,6 @@
 
             for (int i = 0; i < nTest; i++)
             {
-                List<MyPoint> set1 = new List<MyPoint>();
                 MyList<MyPoint> set = new MyList<MyPoint>();
                 string pointCount = Console.ReadLine();
                 int nPoint = Convert.ToInt32(pointCount);
@@ -30,8 +29,7 @@
 
                     set.Add(new MyPoint(Convert.ToInt32(x), Convert.ToInt32(y)));
                 }
-                // WriteOutput(CalcPoints(set).GetBestSet());
-                // WriteOutput(CalcPoints2(set1).GetBestSet());
+                WriteOutput(CalculatePoints(set));
             }
             return;
         }
@@ -44,95 +42,36 @@
             Console.WriteLine("{0} {1}", minLines % mod, permutations % mod);
         }
 
-        public static ResultCollection CalcPoints(MyList<MyPoint> set)
-        {
-            ResultCollection ret = new ResultCollection();
-            Results res = new Results();
-            CalcPointsRecurse2(set, res, ret);
-            return ret;
-        }
-
-        public static ResultCollection2 CalcPoints2(MyList<MyPoint> master)
+        public static ResultCollection2 CalculatePoints(MyList<MyPoint> master)
         {
             ResultCollection2 ret = new ResultCollection2();
             Results2 res = new Results2();
 
             ItemSet start = new ItemSet();
             start.SetUp(master.Count);
-            CalcPointsRecurseWithPointSet(master, start, res, ret);
+            CalcPointsRecurse(master, start, res, ret);
             return ret;
         }
 
-        public static void CalcPointsRecurse2(MyList<MyPoint> set, Results res, ResultCollection ret)
+        public static void CalcPointsRecurse(MyList<MyPoint> master, ItemSet set, Results2 res, ResultCollection2 ret)
         {
             int nSetPoint = set.Count;
-            
-            for (int i = 0; i < nSetPoint - 1; i++)
-            {
-                for (int j = i + 1; j < nSetPoint; j++)
-                {
-                    if (i != j)
-                    {
-                        Results workRes = res.Clone();
-
-                        Line currentLine = new Line();
-
-                        currentLine.AddValidPoint(set[i]);
-                        currentLine.AddValidPoint(set[j]);
-
-                        MyList<MyPoint> workSet = set.Clone();
-
-                        workSet.RemoveAt(j);
-                        workSet.RemoveAt(i);
-
-                        int nPoints = workSet.Count;
-
-                        for (int k = nPoints - 1; k >= 0; k--)
-                        {
-                            if (currentLine.AddValidPoint(workSet[k]))
-                            {
-                                workSet.RemoveAt(k);
-                            }
-                        }
-
-                        workRes.Lines.Add(currentLine);
-
-                        if (workRes.Lines.Count < ret.MinSetSize)
-                        {
-                            if (nSetPoint <= 2)
-                            {
-                                Line l = new Line();
-                                for (int m = 0; m < nSetPoint; ++m)
-                                {
-                                    l.AddValidPoint(set[m]);
-                                }
-                                if (l.Points.Count > 0)
-                                {
-                                    res.Lines.Add(l);
-                                }
-                                ret.AddUniqueResult(res);
-                            }
-                            else
-                            {
-                                CalcPointsRecurse2(workSet, workRes, ret);
-                            }
-                        }
-                    }
-                }
-            }
-            return;
-        }
-
-        public static void CalcPointsRecurseWithPointSet(MyList<MyPoint> master, ItemSet set, Results2 res, ResultCollection2 ret)
-        {
-            int nSetPoint = set.Count;
-            MyList<ItemSet> pars = new MyList<ItemSet>(1000,20);
+            MyList<ItemSet> pars = new MyList<ItemSet>(250,20);
             for (int i = 0; i < nSetPoint - 1; i++)
             {
                 for (int j = i + 1; j < nSetPoint; j++)
                 {
                     int idxi = set.GetItemIndex(i);
                     int idxj = set.GetItemIndex(j);
+
+                    long pow = ItemSet.PowerOfTwo(idxi) | ItemSet.PowerOfTwo(idxj);
+
+                    uint map = (uint)pow;
+                    if (pars.Exists(x => x.HasItems(map)))
+                    {
+                        continue;
+                    }
+
                     if (idxi != idxj)
                     {
                         Results2 workRes = res.Clone();
@@ -143,8 +82,6 @@
                         currentLine.Add(idxi);
                         currentLine.Add(idxj);
                         LineParams par = new LineParams(master[idxi], master[idxj]);
-
-                        workRes.AddResult(currentLine);
 
                         workSet.RemoveAt(idxi);
                         workSet.RemoveAt(idxj);
@@ -158,15 +95,16 @@
                                 workSet.RemoveAt(id);
                             }
                         }
+                        workRes.AddResult(currentLine.GetIndices());
 
-                        if (pars.Exists(x => x.Equals(currentLine)))
-                        {
-                            continue;
-                        }
+                        //if (pars.Exists(x => x.Equals(currentLine)))
+                        //{
+                        //    continue;
+                        //}
 
                         pars.Add(currentLine);
                         
-                        if (workRes.Lines.Count < ResultCollection2.BestSetSize)
+                        if (workRes.Count < ResultCollection2.BestSetSize)
                         {
                             int nWorkSet = workSet.Count;
                             if (nWorkSet <= 2)
@@ -178,14 +116,13 @@
                                 }
                                 if (l.Count > 0)
                                 {
-                                    workRes.AddResult(l);
+                                    workRes.AddResult(l.GetIndices());
                                 }
                                 ret.AddUniqueResult(workRes);
-                                // ret.ResultSet.Add(workRes);
                             }
                             else
                             {
-                                CalcPointsRecurseWithPointSet(master, workSet, workRes, ret);
+                                CalcPointsRecurse(master, workSet, workRes, ret);
                             }
                         }
                     }
