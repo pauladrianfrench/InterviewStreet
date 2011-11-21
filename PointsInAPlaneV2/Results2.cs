@@ -9,10 +9,12 @@
     {
         uint[] lins;
         int count;
+        int values;
         public Results2()
         {
             lins = new uint[10];
             count = 0;
+            values = 0;
         }
 
         public int Count { get { return count; } }
@@ -26,15 +28,18 @@
                 ret.lins[i] = this.lins[i];
             }
             ret.count = this.count;
+            ret.values = this.values;
             return ret;
         }
 
         public void AddResult(uint set)
         {
+            //count++;
+            //values += (int)set * (int)set;
             uint stashThis = 0;
             uint stashTemp = 0;
             bool shift = false;
-           
+
             for (int i = 0; i < count; i++)
             {
                 if (shift)
@@ -69,6 +74,7 @@
 
         public bool Equals(Results2 other)
         {
+            //return this.count == other.count && this.values == other.values;
             int len = this.count;
             int oLen = other.count;
             if (len != oLen)

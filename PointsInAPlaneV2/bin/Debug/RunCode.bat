@@ -1,0 +1,1 @@
+type input.txt | PointsInAPlaneV2.exe > output.txt

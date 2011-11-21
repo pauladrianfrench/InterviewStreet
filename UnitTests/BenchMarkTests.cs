@@ -161,36 +161,58 @@
             Results2 res3 = res.Clone();
             Assert.IsTrue(res2.Equals(res3));
         }
-       
+        
         [Test]
-        public void TestFast()
+        public void LoopIndices()
         {
-            MyList<MyPoint> set1 = new MyList<MyPoint>();
-            set1.Add(new MyPoint(1, 6));
-            set1.Add(new MyPoint(2, 6));
-            set1.Add(new MyPoint(5, 6));
-            set1.Add(new MyPoint(3, 6));
-            set1.Add(new MyPoint(2, 5));
-            set1.Add(new MyPoint(3, 5));
-            set1.Add(new MyPoint(5, 5));
-            set1.Add(new MyPoint(3, 4));
-            set1.Add(new MyPoint(3, 7));
-            set1.Add(new MyPoint(6, 4));
+            ItemSet set = new ItemSet();
+            set.SetUp(16);
+            int nSetPoint = set.Count;
+            int count = 0;
+            for (int i = 0; i < nSetPoint - 1; i++)
+            {
+                for (int j = i + 1; j < nSetPoint; j++)
+                {
+                    if (i != j)
+                    {
+                        int idx = set.GetItemIndex(i);
+                        int idj = set.GetItemIndex(j);
+                        Console.WriteLine("{0} - {1}", idx, idj);
+                        count++;
+                    }
+                }
+            }
+            Console.WriteLine("Number of rows = {0}", count);
+            Assert.AreEqual(120, count);
+        }
 
-            //set1.Add(new MyPoint(0, 0));
-            //set1.Add(new MyPoint(0, 1));
-            //set1.Add(new MyPoint(1, 0));
+        [Test]
+        public void LoopIndicesReducedSet()
+        {
+            ItemSet set = new ItemSet();
+            set.SetUp(16);
 
-            set1.Add(new MyPoint(6, 5));
-            set1.Add(new MyPoint(6, 6));
-            set1.Add(new MyPoint(7, 5));
-            set1.Add(new MyPoint(8, 5));
-            set1.Add(new MyPoint(8, 4));
-            set1.Add(new MyPoint(9, 6));
-
-            ResultCollection2 res = Solution.CalculatePoints(set1);
-            int val = res.ResultSet.Count;
-            OutputResults2(set1, res);
+            set.RemoveAt(3);
+            set.RemoveAt(8);
+            int nSetPoint = set.Count;
+            int count = 0;
+            for (int i = 0; i < nSetPoint - 1; i++)
+            {
+                for (int j = i + 1; j < nSetPoint; j++)
+                {
+                    if (i != j)
+                    {
+                        int idx = set.GetItemIndex(i);
+                        int idj = set.GetItemIndex(j);
+                        Assert.IsTrue(idx != 3 || idx != 8);
+                        Assert.IsTrue(idj != 3 || idj != 8);
+                        //Console.WriteLine("{0} - {1}", idx, idj);
+                        count++;
+                    }
+                }
+            }
+           // Console.WriteLine("Number of rows = {0}", count);
+            Assert.AreEqual(91, count);
         }
 
         [Test]
@@ -220,13 +242,17 @@
         public void TestFast2()
         {
             MyList<MyPoint> set1 = new MyList<MyPoint>();
-            set1.Add(new MyPoint(0, 0));
-            set1.Add(new MyPoint(1, 1));
-            set1.Add(new MyPoint(2, 2));
-            set1.Add(new MyPoint(5, 0));
-            set1.Add(new MyPoint(6, 1));
-            set1.Add(new MyPoint(7, 2));
-            set1.Add(new MyPoint(8, 5));
+            set1.Add(new MyPoint(1, 6));
+            set1.Add(new MyPoint(2, 5));
+            set1.Add(new MyPoint(2, 6));
+            set1.Add(new MyPoint(3, 4));
+            set1.Add(new MyPoint(3, 5));
+            set1.Add(new MyPoint(3, 6));
+            set1.Add(new MyPoint(3, 7));
+            set1.Add(new MyPoint(5, 5));
+            set1.Add(new MyPoint(5, 6));
+            set1.Add(new MyPoint(6, 4));
+
             ResultCollection2 res = Solution.CalculatePoints(set1);
             OutputResults2(set1, res);
         }
@@ -242,6 +268,26 @@
             set1.Add(new MyPoint(6, 1));
             set1.Add(new MyPoint(7, 2));
             set1.Add(new MyPoint(8, 5));
+            ResultCollection2 res = Solution.CalculatePoints(set1).GetBestSet();
+            OutputResults2(set1, res);
+        }
+
+         [Test]
+        public void Test16Second()
+        {
+            MyList<MyPoint> set1 = new MyList<MyPoint>();
+            set1.Add(new MyPoint(8, 4));
+            set1.Add(new MyPoint(9, 6));
+            set1.Add(new MyPoint(1, 6));
+            set1.Add(new MyPoint(2, 6));
+            set1.Add(new MyPoint(5, 6));
+            set1.Add(new MyPoint(3, 6));
+            set1.Add(new MyPoint(6, 6));
+            set1.Add(new MyPoint(7, 5));
+            set1.Add(new MyPoint(8, 5));
+            set1.Add(new MyPoint(3, 7));
+            set1.Add(new MyPoint(6, 4));
+            set1.Add(new MyPoint(6, 5));
             ResultCollection2 res = Solution.CalculatePoints(set1);
             OutputResults2(set1, res);
         }

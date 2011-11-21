@@ -37,7 +37,7 @@
         private static void WriteOutput(ResultCollection2 res)
         {
             int mod = 1000000007;
-            int minLines = ResultCollection2.BestSetSize;
+            int minLines = res.BestSetSize;
             int permutations = Results2.Permute(minLines) * res.ResultSet.Count;
             Console.WriteLine("{0} {1}", minLines % mod, permutations % mod);
         }
@@ -56,21 +56,13 @@
         public static void CalcPointsRecurse(MyList<MyPoint> master, ItemSet set, Results2 res, ResultCollection2 ret)
         {
             int nSetPoint = set.Count;
-            MyList<ItemSet> pars = new MyList<ItemSet>(250,20);
-            for (int i = 0; i < nSetPoint - 1; i++)
+            
+            for (int i = 0; i < nSetPoint-1; i++)
             {
-                for (int j = i + 1; j < nSetPoint; j++)
+                for (int j = i+1; j < nSetPoint; j++)
                 {
                     int idxi = set.GetItemIndex(i);
                     int idxj = set.GetItemIndex(j);
-
-                    long pow = ItemSet.PowerOfTwo(idxi) | ItemSet.PowerOfTwo(idxj);
-
-                    uint map = (uint)pow;
-                    if (pars.Exists(x => x.HasItems(map)))
-                    {
-                        continue;
-                    }
 
                     if (idxi != idxj)
                     {
@@ -96,17 +88,10 @@
                             }
                         }
                         workRes.AddResult(currentLine.GetIndices());
-
-                        //if (pars.Exists(x => x.Equals(currentLine)))
-                        //{
-                        //    continue;
-                        //}
-
-                        pars.Add(currentLine);
                         
-                        if (workRes.Count < ResultCollection2.BestSetSize)
+                        int nWorkSet = workSet.Count;
+                        if (workRes.Count < ret.BestSetSize)
                         {
-                            int nWorkSet = workSet.Count;
                             if (nWorkSet <= 2)
                             {
                                 ItemSet l = new ItemSet();
@@ -119,6 +104,7 @@
                                     workRes.AddResult(l.GetIndices());
                                 }
                                 ret.AddUniqueResult(workRes);
+                                // ret.ResultSet.Add(workRes);
                             }
                             else
                             {

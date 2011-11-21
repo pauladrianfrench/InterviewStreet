@@ -12,43 +12,57 @@
             this.ResultSet = new MyList<Results2>(1000, 50);
             BestSetSize = Int32.MaxValue;
         }
-        public static int BestSetSize { get; set; }
+        public int BestSetSize { get; set; }
         public MyList<Results2> ResultSet { get; set; }
         
         public bool AddUniqueResult(Results2 res)
         {
-            int rCount = res.Count;
-            if (rCount <= 0)
+            if (res.Count == 0 || ResultSet.Exists(x => x.Equals(res)))
             {
                 return false;
             }
-            int nRes = ResultSet.Count;
-            for (int i = nRes -1; i >= 0; --i)
-            {
-                int rsCount = ResultSet[i].Count;
+
+            int rCount = res.Count;
+            //if (rCount <= 0)
+            //{
+            //    return false;
+            //}
+            //int nRes = ResultSet.Count;
+            //for (int i = nRes -1; i >= 0; --i)
+            //{
+            //    int rsCount = ResultSet[i].Count;
                 
-                if (rsCount < rCount || res.Equals(ResultSet[i]))
-                {
-                    return false;
-                }
-                else if (rCount < rsCount)
-                {
-                    ResultSet.RemoveAt(i);
-                }
+            //    if (rsCount < rCount || res.Equals(ResultSet[i]))
+            //    {
+            //        return false;
+            //    }
+            //    else if (rCount < rsCount)
+            //    {
+            //        ResultSet.RemoveAt(i);
+            //    }
+            //}
+            if (rCount < BestSetSize)
+            {
+                BestSetSize = rCount;
             }
+            
             ResultSet.Add(res);
-            BestSetSize = rCount;
             return true;
         }
 
         public ResultCollection2 GetBestSet()
+        {
+            return GetBestSet(BestSetSize);
+        }
+
+        public ResultCollection2 GetBestSet(int lineCount)
         {
             ResultCollection2 ret = new ResultCollection2();
 
             int nRes = this.ResultSet.Count;
             for (int i = 0; i < nRes; i++)
             {
-                if (this.ResultSet[i].Count == ResultCollection2.BestSetSize)
+                if (this.ResultSet[i].Count == lineCount)
                 {
                     ret.ResultSet.Add(this.ResultSet[i]);
                 }

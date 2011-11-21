@@ -41,14 +41,14 @@
             }
         }
 
-        public ResultCollection GetBestSet()
+        public ResultCollection GetBestSet(int lines)
         {
             ResultCollection ret = new ResultCollection();
 
             int nRes = this.ResultSet.Count;
             for (int i = 0; i < nRes; i++)
             {
-                if (this.ResultSet[i].Lines.Count == this.MinSetSize)
+                if (this.ResultSet[i].Lines.Count == lines)
                 {
                     ret.ResultSet.Add(this.ResultSet[i]);
                 }

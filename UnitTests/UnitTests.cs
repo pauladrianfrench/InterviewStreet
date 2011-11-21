@@ -177,7 +177,7 @@
             set1.Add(new MyPoint(6, 1));
             set1.Add(new MyPoint(7, 2));
             set1.Add(new MyPoint(8, 5));
-            ResultCollection2 res = Solution.CalculatePoints(set1).GetBestSet();
+            ResultCollection2 res = Solution.CalculatePoints(set1);
             OutputResults2(set1, res);
         }
 

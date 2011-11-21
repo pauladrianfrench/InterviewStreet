@@ -67,7 +67,7 @@
         {
             MyList<T> ret = new MyList<T>(this.size, this.increment);
             ret.count = this.count;
-            
+
             for (int i = 0; i < this.count; i++)
             {
                 ret[i] = this[i];
