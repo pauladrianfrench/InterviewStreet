@@ -43,18 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ItemSet.cs" />
-    <Compile Include="Line.cs" />
-    <Compile Include="LineDefinition.cs" />
-    <Compile Include="LineParam.cs" />
-    <Compile Include="MyPoint.cs" />
-    <Compile Include="ResultCollection.cs" />
-    <Compile Include="ResultCollection2.cs" />
-    <Compile Include="Results.cs" />
-    <Compile Include="Results2.cs" />
     <Compile Include="Solution.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MyList.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

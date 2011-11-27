@@ -93,9 +93,9 @@
             return -1;
         }
         
-        public bool HasItems(uint its)
+        public bool HasItems(uint itms)
         {
-            return (indices & its) == its;
+            return (indices & itms) == itms;
         }
 
         public void Reset()

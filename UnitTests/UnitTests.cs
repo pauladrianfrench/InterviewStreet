@@ -1,10 +1,9 @@
 ﻿namespace UnitTests
 {
+    using System;
+    using System.Collections.Generic;
     using NUnit.Framework;
     using PointsInAPlaneV2;
-    using System.Collections.Generic;
-    using System;
-    using System.Diagnostics;
 
     [TestFixture]
     public class UnitTests
@@ -262,26 +261,26 @@
             }
         }
 
-        public void OutputResults(ResultCollection res)
-        {
-            int count = 0;
-            foreach (Results r in res.ResultSet)
-            {
-                Console.WriteLine("Result set {0}", ++count);
-                Console.WriteLine("Permutuations: {0}", r.Permutations);
-                foreach (Line l in r.Lines)
-                {
-                    Console.Write("Line: ");
-                    foreach (MyPoint p in l.Points)
-                    {
-                        Console.Write("({0}, {1}) ", p.X, p.Y);
-                    }
-                    Console.WriteLine();
-                }
-                Console.WriteLine();
-            }
-            Console.Read();
-        }
+        //public void OutputResults(ResultCollection res)
+        //{
+        //    int count = 0;
+        //    foreach (Results r in res.ResultSet)
+        //    {
+        //        Console.WriteLine("Result set {0}", ++count);
+        //        Console.WriteLine("Permutuations: {0}", r.Permutations);
+        //        foreach (Line l in r.Lines)
+        //        {
+        //            Console.Write("Line: ");
+        //            foreach (MyPoint p in l.Points)
+        //            {
+        //                Console.Write("({0}, {1}) ", p.X, p.Y);
+        //            }
+        //            Console.WriteLine();
+        //        }
+        //        Console.WriteLine();
+        //    }
+        //    Console.Read();
+        //}
         public void OutputResults2(MyList<MyPoint> set1, ResultCollection2 res)
         {
             int count = 0;

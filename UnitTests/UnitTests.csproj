@@ -41,9 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BenchMarkTests.cs" />
+    <Compile Include="BenchMarkTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="CalcTests.cs" />
-    <Compile Include="UnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -239,6 +239,50 @@
         }
 
         [Test]
+        public void TestItemSetAnd()
+        {
+            ItemSet first = new ItemSet();
+            first.Add(0);
+            first.Add(2);
+            first.Add(3);
+            first.Add(5);
+            first.Add(6);
+            first.Add(8);
+            first.Add(10);
+            first.Add(11);
+
+            ItemSet second = new ItemSet();
+            second.Add(0);
+            second.Add(1);
+            second.Add(3);
+            second.Add(4);
+            second.Add(6);
+            second.Add(7);
+            second.Add(10);
+            second.Add(11);
+
+            ItemSet third = first & second;
+            ItemSet fourth = second & first;
+
+            Assert.AreEqual(third.GetIndices(), fourth.GetIndices());
+            Assert.AreEqual(third.Count, fourth.Count);
+            Assert.AreEqual(5, fourth.Count);
+
+            Assert.AreEqual(0, third.GetItemIndex(0));
+            Assert.AreEqual(3, third.GetItemIndex(1));
+            Assert.AreEqual(6, third.GetItemIndex(2));
+            Assert.AreEqual(10, third.GetItemIndex(3));
+            Assert.AreEqual(11, third.GetItemIndex(4));
+
+            Assert.AreEqual(0, fourth.GetItemIndex(0));
+            Assert.AreEqual(3, fourth.GetItemIndex(1));
+            Assert.AreEqual(6, fourth.GetItemIndex(2));
+            Assert.AreEqual(10, fourth.GetItemIndex(3));
+            Assert.AreEqual(11, fourth.GetItemIndex(4));
+        }
+
+
+        [Test]
         public void Test16First()
         {
             MyList<MyPoint> set1 = new MyList<MyPoint>();
@@ -274,6 +318,35 @@
            // Assert.AreEqual(48, permute);
 
             OutputResults2(set1, res);
+        }
+
+        [Test]
+        public void TestLongLinesCalc()
+        {
+            MyList<MyPoint> set1 = new MyList<MyPoint>();
+            set1.Add(new MyPoint(1, 6));
+            set1.Add(new MyPoint(2, 6));
+            set1.Add(new MyPoint(5, 6));
+            set1.Add(new MyPoint(3, 6));
+            set1.Add(new MyPoint(2, 5));
+            set1.Add(new MyPoint(3, 5));
+            set1.Add(new MyPoint(5, 5));
+            set1.Add(new MyPoint(3, 4));
+            set1.Add(new MyPoint(3, 7));
+            set1.Add(new MyPoint(6, 4));
+            set1.Add(new MyPoint(6, 5));
+            set1.Add(new MyPoint(6, 6));
+            set1.Add(new MyPoint(7, 5));
+            set1.Add(new MyPoint(8, 5));
+            set1.Add(new MyPoint(8, 4));
+            set1.Add(new MyPoint(9, 6));
+
+            Results2 res = Solution.FindLongestLines(set1);
+            for (int i = 0; i < res.Count; ++i)
+            {
+                ItemSet l = res.GetLine(i);
+                Console.WriteLine(Convert.ToString(l.GetIndices(), 2));
+            }
         }
 
 
@@ -331,43 +404,43 @@
             OutputResults2(set1, res);
         }
 
-        [Test]
-        public void SpeedTestCloneTestSet()
-        {
-            MyList<MyPoint> set1 = new MyList<MyPoint>();
-            set1.Add(new MyPoint(1, 6));
-            set1.Add(new MyPoint(2, 5));
-            set1.Add(new MyPoint(2, 6));
-            set1.Add(new MyPoint(3, 4));
-            set1.Add(new MyPoint(3, 5));
-            set1.Add(new MyPoint(3, 6));
-            set1.Add(new MyPoint(3, 7));
-            set1.Add(new MyPoint(5, 5));
-            set1.Add(new MyPoint(5, 6));
-            set1.Add(new MyPoint(6, 4));
+        //[Test]
+        //public void SpeedTestCloneTestSet()
+        //{
+        //    MyList<MyPoint> set1 = new MyList<MyPoint>();
+        //    set1.Add(new MyPoint(1, 6));
+        //    set1.Add(new MyPoint(2, 5));
+        //    set1.Add(new MyPoint(2, 6));
+        //    set1.Add(new MyPoint(3, 4));
+        //    set1.Add(new MyPoint(3, 5));
+        //    set1.Add(new MyPoint(3, 6));
+        //    set1.Add(new MyPoint(3, 7));
+        //    set1.Add(new MyPoint(5, 5));
+        //    set1.Add(new MyPoint(5, 6));
+        //    set1.Add(new MyPoint(6, 4));
 
-            for (int i = 0; i < 1000000; ++i)
-            {
-                MyList<MyPoint> workSet = set1.Clone();
-                Line currentLine = new Line();
+        //    for (int i = 0; i < 1000000; ++i)
+        //    {
+        //        MyList<MyPoint> workSet = set1.Clone();
+        //        Line currentLine = new Line();
 
-                currentLine.AddValidPoint(set1[0]);
-                currentLine.AddValidPoint(set1[1]);
+        //        currentLine.AddValidPoint(set1[0]);
+        //        currentLine.AddValidPoint(set1[1]);
 
-                workSet.RemoveAt(0);
-                workSet.RemoveAt(1);
+        //        workSet.RemoveAt(0);
+        //        workSet.RemoveAt(1);
 
-                int nPoints = workSet.Count;
+        //        int nPoints = workSet.Count;
 
-                for (int k = nPoints - 1; k >= 0; k--)
-                {
-                    if (currentLine.AddValidPoint(workSet[k]))
-                    {
-                        workSet.RemoveAt(k);
-                    }
-                }
-            }
-        }
+        //        for (int k = nPoints - 1; k >= 0; k--)
+        //        {
+        //            if (currentLine.AddValidPoint(workSet[k]))
+        //            {
+        //                workSet.RemoveAt(k);
+        //            }
+        //        }
+        //    }
+        //}
 
         [Test]
         public void SpeedTestCloneItemSet()
@@ -411,26 +484,26 @@
             }
         }
 
-        public void OutputResults(ResultCollection res)
-        {
-            int count = 0;
-            foreach (Results r in res.ResultSet)
-            {
-                Console.WriteLine("Result set {0}", ++count);
-                Console.WriteLine("Permutuations: {0}", r.Permutations);
-                foreach (Line l in r.Lines)
-                {
-                    Console.Write("Line: ");
-                    foreach (MyPoint p in l.Points)
-                    {
-                        Console.Write("({0}, {1}) ", p.X, p.Y);
-                    }
-                    Console.WriteLine();
-                }
-                Console.WriteLine();
-            }
-            Console.Read();
-        }
+        //public void OutputResults(ResultCollection res)
+        //{
+        //    int count = 0;
+        //    foreach (Results r in res.ResultSet)
+        //    {
+        //        Console.WriteLine("Result set {0}", ++count);
+        //        Console.WriteLine("Permutuations: {0}", r.Permutations);
+        //        foreach (Line l in r.Lines)
+        //        {
+        //            Console.Write("Line: ");
+        //            foreach (MyPoint p in l.Points)
+        //            {
+        //                Console.Write("({0}, {1}) ", p.X, p.Y);
+        //            }
+        //            Console.WriteLine();
+        //        }
+        //        Console.WriteLine();
+        //    }
+        //    Console.Read();
+        //}
         public void OutputResults2(MyList<MyPoint> set1, ResultCollection2 res)
         {
             int count = 0;
