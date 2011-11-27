@@ -9,7 +9,7 @@
     {
         public ResultCollection2()
         {
-            this.ResultSet = new MyList<Results2>(1000, 50);
+            this.ResultSet = new MyList<Results2>(100, 50);
             BestSetSize = Int32.MaxValue;
         }
         public int BestSetSize { get; set; }
@@ -17,30 +17,27 @@
         
         public bool AddUniqueResult(Results2 res)
         {
-            if (res.Count == 0 || ResultSet.Exists(x => x.Equals(res)))
+            int rCount = res.Count;
+
+            if (rCount <= 0)
             {
                 return false;
             }
+            int nRes = ResultSet.Count;
+            for (int i = nRes - 1; i >= 0; --i)
+            {
+                int rsCount = ResultSet[i].Count;
 
-            int rCount = res.Count;
-            //if (rCount <= 0)
-            //{
-            //    return false;
-            //}
-            //int nRes = ResultSet.Count;
-            //for (int i = nRes -1; i >= 0; --i)
-            //{
-            //    int rsCount = ResultSet[i].Count;
-                
-            //    if (rsCount < rCount || res.Equals(ResultSet[i]))
-            //    {
-            //        return false;
-            //    }
-            //    else if (rCount < rsCount)
-            //    {
-            //        ResultSet.RemoveAt(i);
-            //    }
-            //}
+                if (rsCount < rCount || res.Equals(ResultSet[i]))
+                {
+                    return false;
+                }
+                else if (rCount < rsCount)
+                {
+                    ResultSet.RemoveAt(i);
+                }
+            }
+
             if (rCount < BestSetSize)
             {
                 BestSetSize = rCount;

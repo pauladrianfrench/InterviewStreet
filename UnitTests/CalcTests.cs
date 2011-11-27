@@ -43,8 +43,8 @@ namespace UnitTests
                 permute += res.ResultSet[i].Permutations;
             }
 
-            Assert.AreEqual(2, val);
-            Assert.AreEqual(48, permute);
+            Assert.AreEqual(8, val);
+            Assert.AreEqual(192, permute);
         }
 
         [Test]
@@ -76,8 +76,8 @@ namespace UnitTests
                 permute += res.ResultSet[i].Permutations;
             }
 
-            Assert.AreEqual(16, val);
-            Assert.AreEqual(140520, permute);
+            Assert.AreEqual(36, val);
+            Assert.AreEqual(864, permute);
         }
 
         [Test]
@@ -109,8 +109,8 @@ namespace UnitTests
                 permute += res.ResultSet[i].Permutations;
             }
 
-            Assert.AreEqual(1171, val);
-            Assert.AreEqual(140520, permute);
+            Assert.AreEqual(36, val);
+            Assert.AreEqual(864, permute);
         }
 
         [Test]
@@ -145,8 +145,8 @@ namespace UnitTests
                 permute += res.ResultSet[i].Permutations;
             }
 
-            Assert.AreEqual(2, val);
-            Assert.AreEqual(48, permute);
+            Assert.AreEqual(8, val);
+            Assert.AreEqual(192, permute);
         }
 
         [Test]
@@ -234,14 +234,14 @@ namespace UnitTests
             set1.Add(new MyPoint(6, 1));
             set1.Add(new MyPoint(7, 2));
             set1.Add(new MyPoint(8, 5));
-            ResultCollection2 res = Solution.CalculatePoints(set1).GetBestSet();
+            ResultCollection2 res = Solution.CalculatePoints(set1);
             int val = res.ResultSet.Count;
             int permute = 0;
             Assert.IsTrue(val > 0, "Number of results greater than zero");
             int c = res.ResultSet[0].Count;
             for (int i = 0; i < val; ++i)
             {
-              //  Assert.AreEqual(c, res.ResultSet[i].Count);
+                Assert.AreEqual(c, res.ResultSet[i].Count);
                 permute += res.ResultSet[i].Permutations;
             }
             Assert.AreEqual(7, val);
@@ -273,10 +273,59 @@ namespace UnitTests
                 Assert.AreEqual(c, res.ResultSet[i].Count);
                 permute += res.ResultSet[i].Permutations;
             }
-            Assert.AreEqual(78, val);
-            Assert.AreEqual(1872, permute);
+            Assert.AreEqual(91, val);
+            Assert.AreEqual(2184, permute);
         }
 
+        [Test]
+        public void TestSingleLine()
+        {
+            MyList<MyPoint> set1 = new MyList<MyPoint>();
+            set1.Add(new MyPoint(1, 5));
+            set1.Add(new MyPoint(2, 8));
+            set1.Add(new MyPoint(3, 11));
+            set1.Add(new MyPoint(4, 14));
+            set1.Add(new MyPoint(5, 17));
+            set1.Add(new MyPoint(6, 20));
+            set1.Add(new MyPoint(7, 23));
+            set1.Add(new MyPoint(8, 26));
+
+            ItemSet set = new ItemSet();
+            set.SetUp(8);
+            ItemSet workSet = set.Clone();
+
+            Assert.AreEqual(8, workSet.Count);
+
+            int idxi = workSet.GetItemIndex(0);
+            int idxj = workSet.GetItemIndex(1);
+
+            ItemSet currentLine = new ItemSet();
+            currentLine.Add(idxi);
+            currentLine.Add(idxj);
+            LineParams par = new LineParams(set1[idxi], set1[idxj]);
+
+            workSet.RemoveAt(idxi);
+            workSet.RemoveAt(idxj);
+
+            Assert.AreEqual(6, workSet.Count);
+
+            int counter = workSet.Count;
+            for (int k = counter-1; k >= 0; --k)
+            {
+                int id = workSet.GetItemIndex(k);
+                if (par.IsCollinear(set1[id]))
+                {
+                    currentLine.Add(id);
+                    workSet.RemoveAt(id);
+                }
+                else
+                {
+                    throw new Exception("All points should be in this line");
+                }
+            }
+            Assert.AreEqual(8, currentLine.Count);
+        }
+    
 
         [Test]
         public void TestCalc10Second()
@@ -304,8 +353,8 @@ namespace UnitTests
                 Assert.AreEqual(c, res.ResultSet[i].Count);
                 permute += res.ResultSet[i].Permutations;
             }
-            Assert.AreEqual(78, val);
-            Assert.AreEqual(1872, permute);
+            Assert.AreEqual(91, val);
+            Assert.AreEqual(2184, permute);
         }
     }
 }

@@ -239,6 +239,45 @@
         }
 
         [Test]
+        public void Test16First()
+        {
+            MyList<MyPoint> set1 = new MyList<MyPoint>();
+            set1.Add(new MyPoint(1, 6));
+            set1.Add(new MyPoint(2, 6));
+            set1.Add(new MyPoint(5, 6));
+            set1.Add(new MyPoint(3, 6));
+            set1.Add(new MyPoint(2, 5));
+            set1.Add(new MyPoint(3, 5));
+            set1.Add(new MyPoint(5, 5));
+            set1.Add(new MyPoint(3, 4));
+            set1.Add(new MyPoint(3, 7));
+            set1.Add(new MyPoint(6, 4));
+            set1.Add(new MyPoint(6, 5));
+            set1.Add(new MyPoint(6, 6));
+            set1.Add(new MyPoint(7, 5));
+            set1.Add(new MyPoint(8, 5));
+            set1.Add(new MyPoint(8, 4));
+            set1.Add(new MyPoint(9, 6));
+
+            ResultCollection2 res = Solution.CalculatePoints(set1);
+            int val = res.ResultSet.Count;
+            int permute = 0;
+            Assert.IsTrue(val > 0);
+            int c = res.ResultSet[0].Count;
+            for (int i = 0; i < val; ++i)
+            {
+                Assert.AreEqual(c, res.ResultSet[i].Count);
+                permute += res.ResultSet[i].Permutations;
+            }
+
+           // Assert.AreEqual(2, val);
+           // Assert.AreEqual(48, permute);
+
+            OutputResults2(set1, res);
+        }
+
+
+        [Test]
         public void TestFast2()
         {
             MyList<MyPoint> set1 = new MyList<MyPoint>();

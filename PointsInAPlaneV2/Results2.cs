@@ -55,14 +55,8 @@
                     lins[i] = set;
                 }
             }
-            if (shift)
-            {
-                lins[count++] = stashThis;
-            }
-            else
-            {
-                lins[count++] = set;
-            }
+            
+            lins[count++] = (shift) ? stashThis : set;
         }
 
         public ItemSet GetLine(int index)

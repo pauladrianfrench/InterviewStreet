@@ -56,7 +56,8 @@
         public static void CalcPointsRecurse(MyList<MyPoint> master, ItemSet set, Results2 res, ResultCollection2 ret)
         {
             int nSetPoint = set.Count;
-            
+
+            MyList<LineParams> lineSet = new MyList<LineParams>();
             for (int i = 0; i < nSetPoint-1; i++)
             {
                 for (int j = i+1; j < nSetPoint; j++)
@@ -66,6 +67,13 @@
 
                     if (idxi != idxj)
                     {
+                        LineParams par = new LineParams(master[idxi], master[idxj]);
+                        if (lineSet.Exists(p => p.IsSameLine(par)))
+                        {
+                            continue;
+                        }
+                        lineSet.Add(par);
+                        
                         Results2 workRes = res.Clone();
 
                         ItemSet workSet = set.Clone();
@@ -73,12 +81,11 @@
                         
                         currentLine.Add(idxi);
                         currentLine.Add(idxj);
-                        LineParams par = new LineParams(master[idxi], master[idxj]);
 
                         workSet.RemoveAt(idxi);
                         workSet.RemoveAt(idxj);
-
-                        for (int k = 0; k < workSet.Count; ++k)
+                        int counter = workSet.Count;
+                        for (int k = counter - 1; k >= 0; --k)
                         {
                             int id = workSet.GetItemIndex(k);
                             if (par.IsCollinear(master[id]))
@@ -87,6 +94,7 @@
                                 workSet.RemoveAt(id);
                             }
                         }
+
                         workRes.AddResult(currentLine.GetIndices());
                         
                         int nWorkSet = workSet.Count;
