@@ -290,40 +290,43 @@ namespace UnitTests
             set1.Add(new MyPoint(7, 23));
             set1.Add(new MyPoint(8, 26));
 
-            ItemSet set = new ItemSet();
-            set.SetUp(8);
-            ItemSet workSet = set.Clone();
+            uint set = 0;
+            for (int i = 0; i < 8; i++)
+			{
+			 set |= (uint)Solution.PowOfTwo[i];
+			}
+           
+            uint workSet = set;
 
-            Assert.AreEqual(8, workSet.Count);
+            Assert.AreEqual(8, Solution.CountBits(workSet));
 
-            int idxi = workSet.GetItemIndex(0);
-            int idxj = workSet.GetItemIndex(1);
+            int idxi = Solution.GetItemIndex(workSet, 0);
+            int idxj = Solution.GetItemIndex(workSet, 1);
 
-            ItemSet currentLine = new ItemSet();
-            currentLine.Add(idxi);
-            currentLine.Add(idxj);
+            uint currentLine = 0;
+            currentLine |= (uint)Solution.PowOfTwo[idxi];
+            currentLine |= (uint)Solution.PowOfTwo[idxj];
             LineParams par = new LineParams(set1[idxi], set1[idxj]);
 
-            workSet.RemoveAt(idxi);
-            workSet.RemoveAt(idxj);
+            workSet &= (~currentLine);
 
-            Assert.AreEqual(6, workSet.Count);
+            Assert.AreEqual(6, Solution.CountBits(workSet));
 
-            int counter = workSet.Count;
+            int counter = Solution.CountBits(workSet);
             for (int k = counter-1; k >= 0; --k)
             {
-                int id = workSet.GetItemIndex(k);
+                int id = Solution.GetItemIndex(workSet, k);
                 if (par.IsCollinear(set1[id]))
                 {
-                    currentLine.Add(id);
-                    workSet.RemoveAt(id);
+                    currentLine |= (uint)Solution.PowOfTwo[id];
+                    workSet &= (uint)~Solution.PowOfTwo[id];
                 }
                 else
                 {
                     throw new Exception("All points should be in this line");
                 }
             }
-            Assert.AreEqual(8, currentLine.Count);
+            Assert.AreEqual(8, Solution.CountBits(currentLine));
         }
     
 
